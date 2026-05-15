@@ -1,9 +1,9 @@
 import { useQuery } from '@tanstack/react-query';
-import { API_BASE_URL } from '../config';
 import { appendBboxParams, normalizeHazard } from '../utils/hazard';
+import { buildApiUrl } from '../utils/api';
 
 const fetchHazards = async ({ bbox, status = 'active', min_severity } = {}) => {
-  const url = new URL(`${API_BASE_URL}/hazards`);
+  const url = buildApiUrl('/hazards');
 
   if (status) {
     url.searchParams.append('status', status);
@@ -33,7 +33,7 @@ export const useHazards = (bbox, filters = {}) => useQuery({
 });
 
 const fetchHazardDetails = async (id) => {
-  const res = await fetch(`${API_BASE_URL}/hazards/${id}`);
+  const res = await fetch(buildApiUrl(`/hazards/${id}`));
   if (!res.ok) throw new Error('Failed to fetch hazard details');
 
   const data = await res.json();

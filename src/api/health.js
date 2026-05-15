@@ -1,8 +1,8 @@
 import { useQuery } from '@tanstack/react-query';
-import { API_BASE_URL } from '../config';
+import { buildApiUrl } from '../utils/api';
 
 const fetchHealth = async () => {
-  const res = await fetch(`${API_BASE_URL}/health`);
+  const res = await fetch(buildApiUrl('/health'));
   if (!res.ok) throw new Error('Health check failed');
   return res.json();
 };

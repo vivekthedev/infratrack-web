@@ -1,9 +1,9 @@
 import { useQuery } from '@tanstack/react-query';
-import { API_BASE_URL } from '../config';
 import { appendBboxParams } from '../utils/hazard';
+import { buildApiUrl } from '../utils/api';
 
 const fetchHeatmap = async (bbox) => {
-  const url = new URL(`${API_BASE_URL}/heatmap`);
+  const url = buildApiUrl('/heatmap');
   appendBboxParams(url, bbox);
 
   const res = await fetch(url);

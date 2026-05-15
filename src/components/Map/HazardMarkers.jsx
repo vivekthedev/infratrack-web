@@ -2,12 +2,12 @@ import { Marker } from 'react-map-gl/mapbox';
 import { useHazards } from '../../api/hazards';
 import { getSeverityColor } from '../../utils/severity';
 
-export const HazardMarkers = ({ bbox, onSelectHazard }) => {
-  const { data: hazards } = useHazards(bbox);
+export const HazardMarkers = ({ bbox, filters, onSelectHazard }) => {
+  const { data: hazards } = useHazards(bbox, filters);
 
   return (
     <>
-      {(hazards || []).map(hazard => {
+      {(hazards || []).map((hazard) => {
         const { color } = getSeverityColor(hazard.severity_score || 0);
 
         return (
@@ -21,7 +21,7 @@ export const HazardMarkers = ({ bbox, onSelectHazard }) => {
               onSelectHazard(hazard);
             }}
           >
-            <div 
+            <div
               className="w-6 h-6 rounded-full border-2 border-white shadow-lg cursor-pointer transform hover:scale-110 transition-transform"
               style={{ backgroundColor: color }}
             />

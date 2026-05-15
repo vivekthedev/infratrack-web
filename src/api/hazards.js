@@ -1,35 +1,52 @@
 import { useQuery } from '@tanstack/react-query';
 import { API_BASE_URL } from '../config';
+import { appendBboxParams, normalizeHazard } from '../utils/hazard';
 
-const fetchHazards = async (bbox) => {
+const fetchHazards = async ({ bbox, status = 'active', min_severity } = {}) => {
   const url = new URL(`${API_BASE_URL}/hazards`);
-  if (bbox) {
-    url.searchParams.append('min_lat', bbox.min_lat);
-    url.searchParams.append('max_lat', bbox.max_lat);
-    url.searchParams.append('min_lng', bbox.min_lng);
-    url.searchParams.append('max_lng', bbox.max_lng);
+
+  if (status) {
+    url.searchParams.append('status', status);
   }
+
+  if (min_severity != null && min_severity > 0) {
+    url.searchParams.append('min_severity', min_severity);
+  }
+
+  appendBboxParams(url, bbox);
+
   const res = await fetch(url);
   if (!res.ok) throw new Error('Failed to fetch hazards');
-  return res.json();
-}
 
-export const useHazards = (bbox) => useQuery({
-  queryKey: ["hazards", bbox],
-  queryFn: () => fetchHazards(bbox),
+  const data = await res.json();
+  const hazards = Array.isArray(data) ? data : data.hazards ?? [];
+
+  return hazards.map(normalizeHazard);
+};
+
+export const useHazards = (bbox, filters = {}) => useQuery({
+  queryKey: ['hazards', bbox, filters],
+  queryFn: () => fetchHazards({ bbox, ...filters }),
   refetchInterval: 30000,
   staleTime: 20000,
-  enabled: !!bbox
+  enabled: !!bbox,
 });
 
 const fetchHazardDetails = async (id) => {
   const res = await fetch(`${API_BASE_URL}/hazards/${id}`);
   if (!res.ok) throw new Error('Failed to fetch hazard details');
-  return res.json();
-}
+
+  const data = await res.json();
+
+  return {
+    ...data,
+    hazard: data.hazard ? normalizeHazard(data.hazard) : undefined,
+    detections: data.detections ?? [],
+  };
+};
 
 export const useHazardDetails = (id) => useQuery({
-  queryKey: ["hazards", id],
+  queryKey: ['hazards', 'detail', id],
   queryFn: () => fetchHazardDetails(id),
-  enabled: !!id
+  enabled: !!id,
 });

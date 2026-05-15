@@ -7,23 +7,21 @@ import { HazardPopup } from './HazardPopup';
 
 const MAPBOX_TOKEN = import.meta.env.VITE_MAPBOX_TOKEN;
 
-export const MapView = ({ bbox, onBboxChange, selectedHazard, onSelectHazard }) => {
+export const MapView = ({ bbox, filters, onBboxChange, selectedHazard, onSelectHazard }) => {
   const mapRef = useRef(null);
 
-  // Initialize bbox on load if map is ready
   useEffect(() => {
     if (mapRef.current) {
       updateBbox();
     }
   }, []);
 
-  // When a hazard is selected from outside (e.g. Sidebar list), fly to it
   useEffect(() => {
     if (selectedHazard && mapRef.current) {
       mapRef.current.flyTo({
         center: [selectedHazard.longitude, selectedHazard.latitude],
         zoom: Math.max(mapRef.current.getZoom(), 15),
-        duration: 1500
+        duration: 1500,
       });
     }
   }, [selectedHazard]);
@@ -35,7 +33,7 @@ export const MapView = ({ bbox, onBboxChange, selectedHazard, onSelectHazard }) 
       min_lat: bounds.getSouth(),
       max_lat: bounds.getNorth(),
       min_lng: bounds.getWest(),
-      max_lng: bounds.getEast()
+      max_lng: bounds.getEast(),
     });
   };
 
@@ -46,7 +44,7 @@ export const MapView = ({ bbox, onBboxChange, selectedHazard, onSelectHazard }) 
         initialViewState={{
           longitude: MAP_CONFIG.center[0],
           latitude: MAP_CONFIG.center[1],
-          zoom: MAP_CONFIG.zoom
+          zoom: MAP_CONFIG.zoom,
         }}
         mapStyle={MAP_CONFIG.style}
         mapboxAccessToken={MAPBOX_TOKEN}
@@ -55,12 +53,12 @@ export const MapView = ({ bbox, onBboxChange, selectedHazard, onSelectHazard }) 
         style={{ width: '100%', height: '100%' }}
       >
         <HeatmapLayer bbox={bbox} />
-        <HazardMarkers bbox={bbox} onSelectHazard={onSelectHazard} />
+        <HazardMarkers bbox={bbox} filters={filters} onSelectHazard={onSelectHazard} />
 
         {selectedHazard && (
-          <HazardPopup 
-            hazard={selectedHazard} 
-            onClose={() => onSelectHazard(null)} 
+          <HazardPopup
+            hazard={selectedHazard}
+            onClose={() => onSelectHazard(null)}
           />
         )}
       </Map>

@@ -1,0 +1,16 @@
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+# Proxy API calls through Netlify to avoid mixed-content blocks (HTTPS page → HTTP API).
+[[redirects]]
+  from = "/api/*"
+  to = "http://34.58.215.171/:splat"
+  status = 200
+  force = true
+
+# SPA fallback
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200

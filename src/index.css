@@ -1,0 +1,37 @@
+@import "tailwindcss";
+@import "mapbox-gl/dist/mapbox-gl.css";
+
+@theme {
+  --font-sans: "Inter", system-ui, sans-serif;
+  
+  --color-severity-smooth: #22c55e;
+  --color-severity-minor: #eab308;
+  --color-severity-moderate: #f97316;
+  --color-severity-severe: #ef4444;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: var(--font-sans);
+  background-color: #111827; /* Dark background */
+  color: #f3f4f6; /* Light text */
+}
+
+/* Custom scrollbar for sidebar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #374151;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #4b5563;
+}

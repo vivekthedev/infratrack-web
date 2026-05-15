@@ -29,6 +29,14 @@ function App() {
     setLastUpdated(new Date());
   };
 
+  const handleSelectHazard = (hazard) => {
+    if (!hazard) {
+      setSelectedHazard(null);
+      return;
+    }
+    setSelectedHazard((current) => (current?.id === hazard.id ? null : hazard));
+  };
+
   return (
     <div className="flex w-screen h-screen overflow-hidden bg-gray-950 font-sans">
       <Sidebar
@@ -36,7 +44,7 @@ function App() {
         filters={filters}
         onFiltersChange={setFilters}
         selectedHazard={selectedHazard}
-        onSelectHazard={setSelectedHazard}
+        onSelectHazard={handleSelectHazard}
       />
 
       <div className="flex-1 relative">
@@ -45,7 +53,7 @@ function App() {
           filters={filters}
           onBboxChange={setBbox}
           selectedHazard={selectedHazard}
-          onSelectHazard={setSelectedHazard}
+          onSelectHazard={handleSelectHazard}
         />
 
         <div className="absolute top-4 right-4 z-10">
